@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:html' as html;
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() => runApp(MyApp());
@@ -11,28 +11,33 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Responsive Web UI',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'VictorMono',
-      ),
+      theme: ThemeData(fontFamily: 'VictorMono'),
       home: HomePage(),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  void _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
+    final imageHeight = screenSize.height < 600 ? screenSize.height * 0.8 : 550;
 
     return Scaffold(
       backgroundColor: const Color(0xFF24232A),
       body: Stack(
         children: [
-          // Background pattern
           Positioned.fill(
-            child: CustomPaint(
-              painter: BackgroundPatternPainter(),
-            ),
+            child: CustomPaint(painter: BackgroundPatternPainter()),
           ),
           Center(
             child: SingleChildScrollView(
@@ -53,31 +58,39 @@ class HomePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(32),
                   child: Stack(
                     children: [
-                      // Background Image
+                      // Background Image with error fallback
                       Image.asset(
                         'assets/images/syam.png',
-                        height: 550,
+                        height: imageHeight,
                         width: double.infinity,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          height: imageHeight,
+                          color: Colors.grey,
+                          child: Center(
+                            child: Text(
+                              'Image not found',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
                       ),
-                      // Overlay
+
+                      // Gradient Overlay
                       Container(
-                        height: 550,
+                        height: imageHeight,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              // Colors.orangeAccent.withOpacity(0.7),
-                              // Colors.pinkAccent.withOpacity(0.7),
-                              // Color(0xFFDF865D).withOpacity(0.7), // orange
-                              // Color(0xFF9A5DD9).withOpacity(0.7), // purple
-                              Color(0xFF0D324D).withOpacity(0.8), // navy gelap
-                              Color(0xFF7F5A83).withOpacity(0.8), // ungu lembut
+                              Color(0xFF0D324D).withOpacity(0.8),
+                              Color(0xFF7F5A83).withOpacity(0.8),
                             ],
                             begin: Alignment.bottomLeft,
                             end: Alignment.topRight,
                           ),
                         ),
                       ),
+
                       // Content
                       Padding(
                         padding: const EdgeInsets.all(32),
@@ -96,36 +109,16 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 20),
-                            // Text(
-                            //   '• Founder • Developer • Designer',
-                            //   style: TextStyle(
-                            //     fontSize: 18,
-                            //     color: Colors.white70,
-                            //     fontFamily: 'VictorMono',
-                            //     fontWeight: FontWeight.w600,
-                            //     letterSpacing: 1.2,
-                            //   ),
-                            // ),
+
                             LayoutBuilder(
                               builder: (context, constraints) {
                                 double width = constraints.maxWidth;
                                 double responsiveFontSize = width < 400
-                                    ? 13 
+                                    ? 13
                                     : width < 800
-                                        ?15 
+                                        ? 15
                                         : 18;
 
-                                // return Text(
-                                //   '• Founder • Developer • Designer',
-                                //   style: TextStyle(
-                                //     fontSize: responsiveFontSize,
-                                //     color: Colors.white70,
-                                //     fontFamily: 'VictorMono',
-                                //     fontWeight: FontWeight.w600,
-                                //     letterSpacing: 1.2,
-                                //   ),
-                                //   textAlign: TextAlign.left,
-                                // );
                                 return Text(
                                   '• Founder • Developer • Designer',
                                   textAlign: TextAlign.left,
@@ -137,12 +130,11 @@ class HomePage extends StatelessWidget {
                                     foreground: Paint()
                                       ..shader = LinearGradient(
                                         colors: [
-                                          Color(0xFFB36AE2), // ungu
-                                          Color(0xFFFA8B61), // oren
+                                          Color(0xFFB36AE2),
+                                          Color(0xFFFA8B61),
                                         ],
                                       ).createShader(
-                                        Rect.fromLTWH(0.0, 0.0, 300.0,
-                                            50.0), // ubah ikut panjang teks
+                                        Rect.fromLTWH(0.0, 0.0, 300.0, 50.0),
                                       ),
                                   ),
                                 );
@@ -150,64 +142,16 @@ class HomePage extends StatelessWidget {
                             ),
 
                             SizedBox(height: 32),
-                            GestureDetector(
-                              onTap: () {
-                                html.window.open(
-                                    'https://hexa-freedom.netlify.app',
-                                    '_blank');
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(color: Colors.white),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Portfolio',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: 'VictorMono',
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    // Icon(Icons.email_outlined,
-                                    //     color: Colors.white),
-                                  ],
-                                ),
-                              ),
+
+                            _customButton(
+                              label: 'Portfolio',
+                              onTap: () => _launchUrl('https://hexa-freedom.netlify.app'),
                             ),
-                            // Container(
-                            //   padding: EdgeInsets.symmetric(
-                            //       vertical: 12, horizontal: 20),
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(30),
-                            //     border: Border.all(color: Colors.white),
-                            //   ),
-                            //   child: Row(
-                            //     mainAxisSize: MainAxisSize.min,
-                            //     children: [
-                            //       Text(
-                            //         'Website',
-                            //         style: TextStyle(
-                            //           color: Colors.white,
-                            //           fontSize: 16,
-                            //         ),
-                            //       ),
-                            //       SizedBox(width: 10),
-                            //       Icon(Icons.email_outlined,
-                            //           color: Colors.white),
-                            //     ],
-                            //   ),
-                            // ),
+
                             SizedBox(height: 10),
 
-                            GestureDetector(
+                            _customButton(
+                              label: 'Contact Number',
                               onTap: () {
                                 showDialog(
                                   context: context,
@@ -218,10 +162,8 @@ class HomePage extends StatelessWidget {
                                       ),
                                       backgroundColor: Color(0xFF2E2C36),
                                       content: Column(
-                                        mainAxisSize:
-                                            MainAxisSize.min, // <== KUNCI UTAMA
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             '+601118872966',
@@ -237,15 +179,13 @@ class HomePage extends StatelessWidget {
                                             alignment: Alignment.centerRight,
                                             child: TextButton.icon(
                                               onPressed: () {
-                                                Clipboard.setData(ClipboardData(
-                                                    text: '+601118872966'));
+                                                Clipboard.setData(
+                                                  ClipboardData(text: '+601118872966'),
+                                                );
                                                 Navigator.of(context).pop();
                                               },
-                                              icon: Icon(Icons.copy,
-                                                  color: Colors.white),
-                                              label: Text('Copy',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
+                                              icon: Icon(Icons.copy, color: Colors.white),
+                                              label: Text('Copy', style: TextStyle(color: Colors.white)),
                                             ),
                                           ),
                                         ],
@@ -254,69 +194,13 @@ class HomePage extends StatelessWidget {
                                   },
                                 );
                               },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(color: Colors.white),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'Contact Number',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: 'VictorMono',
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    // Icon(Icons.email_outlined,
-                                    //     color: Colors.white),
-                                  ],
-                                ),
-                              ),
                             ),
+
                             SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: () {
-                                // Gantikan dengan nombor kamu
-                                const phoneNumber =
-                                    '+601118872966'; // contoh: 60 = Malaysia, 123456789 = nombor
-                                final url = 'https://wa.me/$phoneNumber';
-                                html.window.open(url, '_blank');
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(color: Colors.white),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      'WhatsApp Me',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontFamily: 'VictorMono',
-                                        letterSpacing: 1.2,
-                                      ),
-                                    ),
-                                    SizedBox(width: 10),
-                                    // FaIcon(
-                                    //   FontAwesomeIcons.whatsapp,
-                                    //   color: Colors.white,
-                                    //   size: 30,
-                                    // ),
-                                  ],
-                                ),
-                              ),
+
+                            _customButton(
+                              label: 'WhatsApp Me',
+                              onTap: () => _launchUrl('https://wa.me/+601118872966'),
                             ),
                           ],
                         ),
@@ -327,44 +211,59 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
+
+          // Social icons bottom
           Positioned(
-            bottom: MediaQuery.of(context).size.height /5.5,
+            bottom: screenSize.height / 5.5,
             left: 0,
             right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Instagram (guna ikon kamera)
-                GestureDetector(
-                  onTap: () {
-                    html.window.open('https://instagram.com/syam0x', '_blank');
-                  },
-                  child: Icon(Icons.camera_alt, color: Colors.white),
-                ),
+                _socialIcon(() => _launchUrl('https://instagram.com/syam0x'), Icons.camera_alt),
                 SizedBox(width: 30),
-
-                // Facebook
-                GestureDetector(
-                  onTap: () {
-                    html.window
-                        .open('https://facebook.com/Mesyamudin', '_blank');
-                  },
-                  child: Icon(Icons.facebook, color: Colors.white),
-                ),
+                _socialIcon(() => _launchUrl('https://facebook.com/Mesyamudin'), Icons.facebook),
                 SizedBox(width: 30),
-
-                // Email (mailto)
-                GestureDetector(
-                  onTap: () {
-                    html.window.open('mailto:mesyamuddin@gmail.com', '_blank');
-                  },
-                  child: Icon(Icons.mail, color: Colors.white),
-                ),
+                _socialIcon(() => _launchUrl('mailto:mesyamuddin@gmail.com'), Icons.mail),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _customButton({required String label, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.white),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'VictorMono',
+                letterSpacing: 1.2,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _socialIcon(VoidCallback onTap, IconData icon) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Icon(icon, color: Colors.white),
     );
   }
 }
@@ -389,3 +288,4 @@ class BackgroundPatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+
