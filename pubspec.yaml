@@ -57,21 +57,21 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
     
-flutter_native_splash:
-  color: "#292326"
-  image: assets/images/mesyamuddin.png
-  # branding: assets/images/mesyamuddin.png
-  color_dark: "#292326"
-  image_dark: assets/images/mesyamuddin.png
-  # branding_dark: assets/images/mesyamuddin.png
-
-  android_12:
-    image: assets/images/mesyamuddin.png
-    icon_background_color: "#292326"
-    image_dark: assets/images/mesyamuddin.png
-    icon_background_color_dark: "#292326"
-
-  web: false
+# flutter_native_splash:
+#   color: "#292326"
+#   image: assets/images/mesyamuddin.png
+#   # branding: assets/images/mesyamuddin.png
+#   color_dark: "#292326"
+#   image_dark: assets/images/mesyamuddin.png
+#   # branding_dark: assets/images/mesyamuddin.png
+#
+#   android_12:
+#     image: assets/images/mesyamuddin.png
+#     icon_background_color: "#292326"
+#     image_dark: assets/images/mesyamuddin.png
+#     icon_background_color_dark: "#292326"
+#
+#   web: false
 
 
 
