@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
                     children: [
                       // Background Image
                       Image.asset(
-                        'assets/images/syam.jpg',
+                        'assets/images/syam.png',
                         height: 550,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -85,27 +85,70 @@ class HomePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 60),
+                            SizedBox(height: 50),
                             Text(
                               "Hi, I'm Syam\nBuilding connected digital solutions.",
                               style: TextStyle(
-                                fontSize: 34,
+                                fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                                 height: 1.2,
                               ),
                             ),
                             SizedBox(height: 20),
-                            Text(
-                              '• Founder • Developer • Designer',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white70,
-                                fontFamily: 'VictorMono',
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 1.2,
-                              ),
+                            // Text(
+                            //   '• Founder • Developer • Designer',
+                            //   style: TextStyle(
+                            //     fontSize: 18,
+                            //     color: Colors.white70,
+                            //     fontFamily: 'VictorMono',
+                            //     fontWeight: FontWeight.w600,
+                            //     letterSpacing: 1.2,
+                            //   ),
+                            // ),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                double width = constraints.maxWidth;
+                                double responsiveFontSize = width < 400
+                                    ? 13 
+                                    : width < 800
+                                        ?15 
+                                        : 18;
+
+                                // return Text(
+                                //   '• Founder • Developer • Designer',
+                                //   style: TextStyle(
+                                //     fontSize: responsiveFontSize,
+                                //     color: Colors.white70,
+                                //     fontFamily: 'VictorMono',
+                                //     fontWeight: FontWeight.w600,
+                                //     letterSpacing: 1.2,
+                                //   ),
+                                //   textAlign: TextAlign.left,
+                                // );
+                                return Text(
+                                  '• Founder • Developer • Designer',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    fontSize: responsiveFontSize,
+                                    fontFamily: 'VictorMono',
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 1.5,
+                                    foreground: Paint()
+                                      ..shader = LinearGradient(
+                                        colors: [
+                                          Color(0xFFB36AE2), // ungu
+                                          Color(0xFFFA8B61), // oren
+                                        ],
+                                      ).createShader(
+                                        Rect.fromLTWH(0.0, 0.0, 300.0,
+                                            50.0), // ubah ikut panjang teks
+                                      ),
+                                  ),
+                                );
+                              },
                             ),
+
                             SizedBox(height: 32),
                             GestureDetector(
                               onTap: () {
@@ -124,10 +167,12 @@ class HomePage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      'Website',
+                                      'Portfolio',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
+                                        fontFamily: 'VictorMono',
+                                        letterSpacing: 1.2,
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -220,10 +265,12 @@ class HomePage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      'Phone Numnber',
+                                      'Contact Number',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
+                                        fontFamily: 'VictorMono',
+                                        letterSpacing: 1.2,
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -238,7 +285,7 @@ class HomePage extends StatelessWidget {
                               onTap: () {
                                 // Gantikan dengan nombor kamu
                                 const phoneNumber =
-                                    '60123456789'; // contoh: 60 = Malaysia, 123456789 = nombor
+                                    '+601118872966'; // contoh: 60 = Malaysia, 123456789 = nombor
                                 final url = 'https://wa.me/$phoneNumber';
                                 html.window.open(url, '_blank');
                               },
@@ -253,10 +300,12 @@ class HomePage extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      'Whatsapp Me',
+                                      'WhatsApp Me',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
+                                        fontFamily: 'VictorMono',
+                                        letterSpacing: 1.2,
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -279,7 +328,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 80,
+            bottom: MediaQuery.of(context).size.height /5.5,
             left: 0,
             right: 0,
             child: Row(
