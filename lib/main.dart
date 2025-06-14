@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mesyamuddin/home_page.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-void main() async {
+void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   // await MobileAds.instance.initialize();
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
