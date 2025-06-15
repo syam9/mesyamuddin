@@ -103,7 +103,8 @@ class HomePage extends StatelessWidget {
                       // Background Image with fallback
                       Image.asset(
                         'assets/images/syam.png',
-                        height: imageHeight,
+                        height: screenSize.width < 450 ? imageHeight * 1.3 : imageHeight,
+                        // height: imageHeight * 1.3,
                         width: double.infinity,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => Container(
@@ -120,7 +121,8 @@ class HomePage extends StatelessWidget {
 
                       // Gradient Overlay
                       Container(
-                        height: imageHeight,
+                        height: screenSize.width < 450 ? imageHeight * 1.3 : imageHeight,
+                        // height: imageHeight,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
@@ -204,7 +206,7 @@ class HomePage extends StatelessWidget {
                                   ),
                                   child: Text(
                                     '• Founder • Developer • Designer',
-                                    textAlign: TextAlign.center,
+                                    textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontSize: responsiveFontSize,
                                       fontFamily: 'VictorMono',
@@ -316,7 +318,10 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 10),
-                            Row(
+                            Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              alignment: WrapAlignment.start,
                               children: [
                                 _customButton(
                                   label: 'Contact Number',
@@ -352,16 +357,18 @@ class HomePage extends StatelessWidget {
                                                   onPressed: () {
                                                     Clipboard.setData(
                                                       ClipboardData(
-                                                        text: '+601118872966',
-                                                      ),
+                                                          text:
+                                                              '+601118872966'),
                                                     );
                                                     Navigator.of(context).pop();
                                                   },
                                                   icon: Icon(Icons.copy,
                                                       color: Colors.white),
-                                                  label: Text('Copy',
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
+                                                  label: Text(
+                                                    'Copy',
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ),
                                             ],
@@ -371,14 +378,13 @@ class HomePage extends StatelessWidget {
                                     );
                                   },
                                 ),
-                                SizedBox(width: 10),
                                 _customButton(
                                   label: 'WhatsApp Me',
                                   onTap: () =>
                                       _launchUrl('https://wa.me/+601118872966'),
                                 ),
                               ],
-                            ),
+                            )
                           ],
                         ),
                       ),
