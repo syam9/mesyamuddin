@@ -324,7 +324,7 @@ class HomePage extends StatelessWidget {
                               alignment: WrapAlignment.start,
                               children: [
                                 _customButton(
-                                  label: 'Contact Number',
+                                  label: 'Phone',
                                   onTap: () {
                                     showDialog(
                                       context: context,
