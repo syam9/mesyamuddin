@@ -103,7 +103,7 @@ class HomePage extends StatelessWidget {
                       // Background Image with fallback
                       Image.asset(
                         'assets/images/syam.png',
-                        height: screenSize.width < 450 ? imageHeight * 1.3 : imageHeight,
+                        height: screenSize.width < 400 ? imageHeight * 1.3 : imageHeight,
                         // height: imageHeight * 1.3,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -121,7 +121,7 @@ class HomePage extends StatelessWidget {
 
                       // Gradient Overlay
                       Container(
-                        height: screenSize.width < 450 ? imageHeight * 1.3 : imageHeight,
+                        height: screenSize.width < 400 ? imageHeight * 1.3 : imageHeight,
                         // height: imageHeight,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
