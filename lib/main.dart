@@ -2,22 +2,150 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import './accountNumberPage.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isFormSubmitted = prefs.getBool('form_submitted') ?? false;
+
+  runApp(MyApp(showForm: !isFormSubmitted));
+}
 
 class MyApp extends StatelessWidget {
+  final bool showForm;
+  const MyApp({Key? key, required this.showForm}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Responsive Web UI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'VictorMono'),
-      home: HomePage(),
+      home: HomePage(showForm: showForm),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+// class HomePage extends StatelessWidget {
+
+class HomePage extends StatefulWidget {
+  final bool showForm;
+  const HomePage({Key? key, required this.showForm}) : super(key: key);
+
+  @override
+  _HomePageScreenPageState createState() => _HomePageScreenPageState();
+}
+
+class _HomePageScreenPageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showForm) {
+      Future.delayed(Duration.zero, () {
+        _showBusinessFormDialog();
+      });
+    }
+  }
+
+  void _showBusinessFormDialog() {
+    String name = '';
+    String business = '';
+    String phone = '';
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Simpan Kenalan"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(labelText: "Nama"),
+                  onChanged: (val) => name = val,
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: "Jual Apa?"),
+                  onChanged: (val) => business = val,
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: "Nombor Telifon"),
+                  keyboardType: TextInputType.phone,
+                  onChanged: (val) => phone = val,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context); // This will dismiss the dialog
+              },
+            ),
+            TextButton(
+              child: Text("Submit"),
+              onPressed: () async {
+                Navigator.pop(context);
+                await _submitToTelegram(name, business, phone);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _submitToTelegram(
+      String name, String business, String phone) async {
+    final vcfContent = """
+BEGIN:VCARD
+VERSION:3.0
+N:$name
+ORG:$business
+TEL;TYPE=CELL:$phone
+END:VCARD
+""";
+
+    final fileName = "${name}_$business.vcf".replaceAll(" ", "_");
+
+    // Convert ke bytes
+    final bytes = Uint8List.fromList(vcfContent.codeUnits);
+
+    // Telegram Bot Token & Chat ID
+    final token = "7854918162:AAEEEZquUyeD_kKc_dWko2wJ8wleMGZYxQA";
+    final chatId = "249352045";
+    final url = Uri.parse("https://api.telegram.org/bot$token/sendDocument");
+
+    var request = http.MultipartRequest('POST', url)
+      ..fields['chat_id'] = chatId
+      // ..fields['caption'] = "$name - $business"
+      ..fields['caption'] =
+          "Name: $name\nJual Apa?: $business\nNombor Telifon: $phone\n\nWhatsApp: https://wa.me/+6${phone.replaceAll("+", "").replaceAll(" ", "")}"
+      ..files.add(
+          http.MultipartFile.fromBytes('document', bytes, filename: fileName));
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("✅ Berjaya hantar ke Telegram");
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('form_submitted', true);
+    } else {
+      print("❌ Gagal hantar: ${response.statusCode}");
+      final resBody = await response.stream.bytesToString();
+      print("Telegram error: $resBody");
+    }
+  }
+
   void _launchUrl(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -103,7 +231,9 @@ class HomePage extends StatelessWidget {
                       // Background Image with fallback
                       Image.asset(
                         'assets/images/syam.png',
-                        height: screenSize.width < 400 ? imageHeight * 1.3 : imageHeight,
+                        height: screenSize.width < 400
+                            ? imageHeight * 1.3
+                            : imageHeight,
                         // height: imageHeight * 1.3,
                         width: double.infinity,
                         fit: BoxFit.cover,
@@ -121,7 +251,9 @@ class HomePage extends StatelessWidget {
 
                       // Gradient Overlay
                       Container(
-                        height: screenSize.width < 400 ? imageHeight * 1.3 : imageHeight,
+                        height: screenSize.width < 400
+                            ? imageHeight * 1.3
+                            : imageHeight,
                         // height: imageHeight,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -273,8 +405,14 @@ class HomePage extends StatelessWidget {
                                 SizedBox(width: 10),
                                 _customButton(
                                   label: 'Payment',
-                                  onTap: () => _launchUrl(
-                                      'https://www.paypal.com/ncp/payment/J5ACSKYN76YDN'),
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        const AccountNumberDialog(),
+                                  ),
+
+                                  // _launchUrl(
+                                  //     'https://www.paypal.com/ncp/payment/J5ACSKYN76YDN'),
                                 ),
                               ],
                             ),
