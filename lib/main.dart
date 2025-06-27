@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Responsive Web UI',
+      title: 'Digital Namecard',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'VictorMono'),
       home: HomePage(showForm: showForm),
@@ -394,7 +394,7 @@ END:VCARD
                               children: [
                                 SizedBox(height: 32),
                                 _customButton(
-                                  label: 'Portfolio',
+                                  label: 'Website',
                                   // onTap: () => _launchUrl(
                                   //     'https://hexa-freedom.netlify.app'),
                                   onTap: () => _showPasswordDialog(
@@ -421,10 +421,10 @@ END:VCARD
                               children: [
                                 SizedBox(height: 32),
                                 _customButton(
-                                  label: 'Resume & CV',
+                                  label: 'My Folder  ',
                                   onTap: () => _showPasswordDialog(
                                     context,
-                                    'https://drive.google.com/drive/folders/1UMYOj7wL9doJKBq7qlPWJg4q7Ntxt_hj?usp=share_link',
+                                    'https://drive.google.com/drive/folders/1_Zo8-WQVuItyUkIj9i0XCLFxY5tKeox1?usp=share_link',
                                   ),
                                 ),
                               ],
@@ -478,36 +478,163 @@ END:VCARD
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                '+601118872966',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: 'VictorMono',
-                                                  fontWeight: FontWeight.w600,
-                                                  letterSpacing: 1.2,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: TextButton.icon(
-                                                  onPressed: () {
-                                                    Clipboard.setData(
-                                                      ClipboardData(
-                                                          text:
-                                                              '+601118872966'),
-                                                    );
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  icon: Icon(Icons.copy,
-                                                      color: Colors.white),
-                                                  label: Text(
-                                                    'Copy',
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                      ),
+                                                      children: [
+                                                        TextSpan(
+                                                            text:
+                                                                'My phone number:\n'),
+                                                        TextSpan(
+                                                          text: '+601118872966',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'VictorMono',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            letterSpacing: 1.2,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
+                                                  SizedBox(height: 16),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: TextButton.icon(
+                                                      onPressed: () {
+                                                        Clipboard.setData(
+                                                          ClipboardData(
+                                                              text:
+                                                                  '+601118872966'),
+                                                        );
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      icon: Icon(Icons.copy,
+                                                          color: Colors.white),
+                                                      label: Text(
+                                                        'Copy',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 20),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                      ),
+                                                      children: [
+                                                        TextSpan(
+                                                            text:
+                                                                'Email:\n'),
+                                                        TextSpan(
+                                                          text: 'call.syam01@gmail.com',
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'VictorMono',
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            letterSpacing: 1.2,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 16),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: TextButton.icon(
+                                                      onPressed: () {
+                                                        Clipboard.setData(
+                                                          ClipboardData(
+                                                              text:
+                                                                  'call.syam01@gmail.com'),
+                                                        );
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      icon: Icon(Icons.copy,
+                                                          color: Colors.white),
+                                                      label: Text(
+                                                        'Copy',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 30),
+                                              Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: OutlinedButton(
+                                                      onPressed: () async {
+                                                        final Uri phoneUri = Uri(
+                                                            scheme: 'tel',
+                                                            path:
+                                                                '+601118872966');
+                                                        if (await canLaunchUrl(
+                                                            phoneUri)) {
+                                                          await launchUrl(
+                                                              phoneUri);
+                                                        } else {
+                                                          print(
+                                                              'Could not launch phone call');
+                                                        }
+                                                      },
+                                                      style: OutlinedButton
+                                                          .styleFrom(
+                                                        foregroundColor: Colors
+                                                            .green, // warna text dan border
+                                                        side: BorderSide(
+                                                            color: Colors.green,
+                                                            width: 2),
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 24,
+                                                                vertical: 12),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        'Save Contact',
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
